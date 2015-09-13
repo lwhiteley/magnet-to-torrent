@@ -35,7 +35,7 @@ var verifyTorrent = function(url, cb) {
             'Accept-Encoding': 'gzip,deflate'
         }
     };
-    request.get(options)
+    var r = request.get(options)
         .on('error', function(err) {
             cb(err);
         })
@@ -43,6 +43,7 @@ var verifyTorrent = function(url, cb) {
             if (response.statusCode === 200) {
                 if (response.headers['content-type'] === 'application/octet-stream' ||
                     response.headers['content-type'] === 'application/x-bittorrent') {
+                    r.abort();
                     cb(null, url);
                 } else {
                     cb('Invalid content type: ' + response.headers['content-type']);

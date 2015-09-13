@@ -14,10 +14,10 @@ var magnetToTorrent = require('magnet-to-torrent');
 var magnet = ' < a valid magnet uri > ';
 magnetToTorrent.getLink(magnet)
     .then( function(torrentLink){
-        console.log(torrentLink);
+        console.log(torrentLink); // torrent url as string
     })
     .fail(function(error){
-        console.error(error)
+        console.error(error); // couldn't get a valid link
     });
 ```
 

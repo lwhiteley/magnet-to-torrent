@@ -1,0 +1,8 @@
+.travis.yml
+test
+tmp
+.gitignore
+.idea
+.DS_Store
+*.log
+tmp

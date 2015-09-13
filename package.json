@@ -1,0 +1,34 @@
+{
+  "name": "magnet-to-torrent",
+  "version": "0.0.1",
+  "description": "convert magnet link to torrent download link",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lwhiteley/magnet-to-torrent.git"
+  },
+  "keywords": [
+    "magnet",
+    "torrent",
+    "magnettotorrent",
+    "magnet2torrent",
+    "torcache",
+    "torrage",
+    "bt.box"
+  ],
+  "author": "Layton Whiteley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lwhiteley/magnet-to-torrent/issues"
+  },
+  "homepage": "https://github.com/lwhiteley/magnet-to-torrent",
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "magnet-uri": "^5.0.0",
+    "q": "^1.4.1",
+    "request": "^2.61.0"
+  }
+}

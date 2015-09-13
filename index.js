@@ -1,49 +1,66 @@
 'use strict';
 
 var mguri = require('magnet-uri');
-var request = require('request');
-var q = require('q');
+var needle = require('needle');
+var q = require('q'),
+    _ = require('lodash'),
+    validator = require('validator');
 
 var service = {},
     servUrl = [
-    function(hash) {
-        return 'http://bt.box.n0808.com/' + hash.slice(0, 2) + '/' + hash.slice(-2) + '/' + hash + '.torrent';
-    },
-    function(hash) {
-        return 'https://torrage.com/torrent/' + hash + '.torrent';
-    },
-    function(hash) {
-        return 'http://torcache.net/torrent/' + hash + '.torrent';
-    }
-    //http://btcache.me/torrent/013060CD7E3C6CD61A2CC983F1714C9359928EFE
+        function(hash) {
+            return 'http://bt.box.n0808.com/' + hash.slice(0, 2) + '/' + hash.slice(-2) + '/' + hash + '.torrent';
+        },
+        function(hash){
+            return 'http://reflektor.karmorra.info/torrent/' + hash + '.torrent';
+        },
+        function(hash) {
+            return 'http://torcache.net/torrent/' + hash + '.torrent';
+        },
+        function(hash) {
+            return 'https://torrage.com/torrent/' + hash + '.torrent';
+        }
 ];
 
 var parseInfoHash = function(uri) {
-    var uriObj = mguri.decode(uri);
-    var hash = uriObj.infoHash || uri;
-    if (/^[A-Za-z0-9]{40}$/.test(hash)) {
-        return hash.toUpperCase();
+    if(uri){
+        var uriObj = mguri.decode(uri);
+        var hash = uriObj.infoHash || uri;
+        if (/^[A-Za-z0-9]{40}$/.test(hash)) {
+            return hash.toUpperCase();
+        }
+    }
+};
+service.validateMagnet = function(uri) {
+    if(uri){
+        var uriObj = mguri.decode(uri);
+        var hash = uriObj.infoHash || uri;
+        if (/^[A-Za-z0-9]{40}$/.test(hash)) {
+            return true;
+        }
+    }
+    return false;
+};
+service.addService = function(serv) {
+    if(_.isFunction(serv)){
+        servUrl.push(serv);
+    }else{
+        console.warn('Magnet conversion service not added!')
     }
 };
 
 var verifyTorrent = function(url, cb) {
     //console.log('Get torrent from:', url);
-    var options = {
-        url: url,
-        headers: {
-            'User-Agent': 'Node.js/12.0 io.js/2.0',
-            'Accept-Encoding': 'gzip,deflate'
-        }
-    };
-    var r = request.get(options)
-        .on('error', function(err) {
-            cb(err);
-        })
-        .on('response', function(response) {
+
+    var options = { follow_max: 5 };
+    var stream = needle.get(url, options, function(error, response, body){
+        if(error){
+            cb(error);
+        }else{
             if (response.statusCode === 200) {
                 if (response.headers['content-type'] === 'application/octet-stream' ||
                     response.headers['content-type'] === 'application/x-bittorrent') {
-                    r.abort();
+
                     cb(null, url);
                 } else {
                     cb('Invalid content type: ' + response.headers['content-type']);
@@ -51,7 +68,8 @@ var verifyTorrent = function(url, cb) {
             } else {
                 cb('Error response: ' + response.statusCode);
             }
-        });
+        }
+    });
 };
 
 service.getLink = function(uri) {
@@ -61,15 +79,20 @@ service.getLink = function(uri) {
     }
 
     var getNext = function(x) {
-        if (x < servUrl.length) {
-            verifyTorrent(servUrl[x](hash), function(err, url) {
-                if (err) {
-                    //console.log(err);
-                    getNext(x+1);
-                } else {
-                    d.resolve(url);
-                }
-            });
+        if (x < servUrl.length ) {
+            var torrentUrl = servUrl[x](hash);
+            if(validator.isURL(torrentUrl)){
+                verifyTorrent(torrentUrl, function(err, url) {
+                    if (err) {
+                        //console.log(err);
+                        getNext(x+1);
+                    } else {
+                        d.resolve(url);
+                    }
+                });
+            }else{
+                getNext(x+1);
+            }
         } else {
             d.reject('Could not convert magnet link. All services tried.');
         }

@@ -1,5 +1,5 @@
 # magnet-to-torrent
-convert a magnet link to a torrent download link 
+convert a magnet uri to a torrent download link 
 
 ### Install 
 
@@ -11,7 +11,7 @@ npm install --save magnet-to-torrent
 ```javascript
 var magnetToTorrent = require('magnet-to-torrent');
 
-var magnet = ' < a valid magnet uri > ';
+var magnet = '< a valid magnet uri >';
 magnetToTorrent.getLink(magnet)
     .then( function(torrentLink){
         console.log(torrentLink); // torrent url as string
@@ -21,9 +21,44 @@ magnetToTorrent.getLink(magnet)
     });
 ```
 
+### Validate a Magnet URI
+```javascript
+var bool = magnetToTorrent.validateMagnet(magnet); // returns boolean
+```
+
+### Default Services Used
+
+The library will attempt to retrieve a working torrent link from the following services, respectively:
+
+- http://bt.box.n0808.com
+- http://reflektor.karmorra.info
+- http://torcache.net
+- https://torrage.com
+
+### Adding a Conversion Service
+ 
+Each service takes in `hash` as a parameter and uses it to build the download link in the 
+format of how the said service allows a user to download torrents.
+The library tests if the torrent is cached by the service and responds 
+with the first url that has the torrent available.
+
+You can add your own service before attempting to convert magnets.
+
+See snippet below.
+
+eg. 
+```javascript
+var service = function(hash){
+    return 'http://reflektor.karmorra.info/torrent/' + hash + '.torrent';
+};
+
+magnetToTorrent.addService(service);
+```
+
 ### Notes:
 
-This is an experiment but should work fine. 
+- `hash` is the torrent hash extracted from the magnet uri
+- This is an experiment but should work fine. 
 
 Report any issues.
 

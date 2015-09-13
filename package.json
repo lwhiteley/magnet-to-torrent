@@ -26,7 +26,6 @@
   },
   "homepage": "https://github.com/lwhiteley/magnet-to-torrent",
   "dependencies": {
-    "lodash": "^3.10.1",
     "magnet-uri": "^5.0.0",
     "q": "^1.4.1",
     "request": "^2.61.0"

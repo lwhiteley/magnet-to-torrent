@@ -4,7 +4,8 @@ var mguri = require('magnet-uri');
 var request = require('request');
 var q = require('q');
 
-var servUrl = [
+var service = {},
+    servUrl = [
     function(hash) {
         return 'http://bt.box.n0808.com/' + hash.slice(0, 2) + '/' + hash.slice(-2) + '/' + hash + '.torrent';
     },
@@ -17,15 +18,15 @@ var servUrl = [
     //http://btcache.me/torrent/013060CD7E3C6CD61A2CC983F1714C9359928EFE
 ];
 
-function parseInfoHash(uri) {
+var parseInfoHash = function(uri) {
     var uriObj = mguri.decode(uri);
     var hash = uriObj.infoHash || uri;
     if (/^[A-Za-z0-9]{40}$/.test(hash)) {
         return hash.toUpperCase();
     }
-}
+};
 
-function getTorrent(url, cb) {
+var verifyTorrent = function(url, cb) {
     //console.log('Get torrent from:', url);
     var options = {
         url: url,
@@ -50,9 +51,9 @@ function getTorrent(url, cb) {
                 cb('Error response: ' + response.statusCode);
             }
         });
-}
+};
 
-module.exports = function(uri, cb) {
+service.getLink = function(uri) {
     var hash = parseInfoHash(uri), d = q.defer();
     if (!hash) {
         d.reject('Invalid magnet uri or info hash.');
@@ -60,7 +61,7 @@ module.exports = function(uri, cb) {
 
     var getNext = function(x) {
         if (x < servUrl.length) {
-            getTorrent(servUrl[x](hash), function(err, url) {
+            verifyTorrent(servUrl[x](hash), function(err, url) {
                 if (err) {
                     //console.log(err);
                     getNext(x+1);
@@ -76,3 +77,5 @@ module.exports = function(uri, cb) {
     getNext(0);
     return d.promise;
 };
+
+module.exports = service;

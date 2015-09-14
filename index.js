@@ -53,7 +53,7 @@ var verifyTorrent = function(url, cb) {
     //console.log('Get torrent from:', url);
 
     var options = { follow_max: 5 };
-    var stream = needle.get(url, options, function(error, response, body){
+    var stream = needle.head(url, options, function(error, response, body){
         if(error){
             cb(error);
         }else{

@@ -76,29 +76,28 @@ service.getLink = function(uri) {
     var hash = parseInfoHash(uri), d = q.defer();
     if (!hash) {
         d.reject('Invalid magnet uri or info hash.');
-    }
-
-    var getNext = function(x) {
-        if (x < servUrl.length ) {
-            var torrentUrl = servUrl[x](hash);
-            if(validator.isURL(torrentUrl)){
-                verifyTorrent(torrentUrl, function(err, url) {
-                    if (err) {
-                        //console.log(err);
-                        getNext(x+1);
-                    } else {
-                        d.resolve(url);
-                    }
-                });
-            }else{
-                getNext(x+1);
+    }else{
+        var getNext = function(x) {
+            if (x < servUrl.length ) {
+                var torrentUrl = servUrl[x](hash);
+                if(validator.isURL(torrentUrl)){
+                    verifyTorrent(torrentUrl, function(err, url) {
+                        if (err) {
+                            //console.log(err);
+                            getNext(x+1);
+                        } else {
+                            d.resolve(url);
+                        }
+                    });
+                }else{
+                    getNext(x+1);
+                }
+            } else {
+                d.reject('Could not convert magnet link. All services tried.');
             }
-        } else {
-            d.reject('Could not convert magnet link. All services tried.');
-        }
-    };
-
-    getNext(0);
+        };
+        getNext(0);
+    }
     return d.promise;
 };
 

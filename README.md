@@ -23,7 +23,7 @@ magnetToTorrent.getLink(magnet)
 
 ### Validate a Magnet URI
 
-The folowing verifies if the magnet uri provided is formatted correctly.
+The following verifies if the magnet uri provided is formatted correctly.
 
 ```javascript
 var bool = magnetToTorrent.validateMagnet(magnet); // returns boolean

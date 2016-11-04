@@ -59,7 +59,7 @@ magnetToTorrent.addService(service);
 
 /**
  OR:
- Optional use a second parameter to push the service to the top of the stack
+ Optionally, use a second parameter to push the service to the top of the stack
  This will ensure your service is called first
 **/
 magnetToTorrent.addService(service, true);

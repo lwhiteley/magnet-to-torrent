@@ -41,17 +41,15 @@ service.validateMagnet = function(uri) {
     }
     return false;
 };
-service.addService = function(serv) {
+service.addService = function(serv, pushToFront) {
     if(_.isFunction(serv)){
-        servUrl.push(serv);
+        !pushToFront ? servUrl.push(serv) : servUrl.unshift(serv);
     }else{
         console.warn('Magnet conversion service not added!')
     }
 };
 
 var verifyTorrent = function(url, cb) {
-    //console.log('Get torrent from:', url);
-
     var options = { follow_max: 5 };
     var stream = needle.head(url, options, function(error, response, body){
         if(error){
@@ -82,12 +80,7 @@ service.getLink = function(uri) {
                 var torrentUrl = servUrl[x](hash);
                 if(validator.isURL(torrentUrl)){
                     verifyTorrent(torrentUrl, function(err, url) {
-                        if (err) {
-                            //console.log(err);
-                            getNext(x+1);
-                        } else {
-                            d.resolve(url);
-                        }
+                        (err)? getNext(x+1) : d.resolve(url);
                     });
                 }else{
                     getNext(x+1);

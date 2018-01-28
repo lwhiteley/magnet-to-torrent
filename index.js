@@ -8,7 +8,7 @@ const logger = {
 const mguri = require('magnet-uri');
 const needle = require('needle');
 const Promise = require('bluebird');
-const _ = require('lodash');
+const isFunction = require('lodash/isFunction');
 const validator = require('validator');
 
 const service = {};
@@ -41,8 +41,9 @@ service.isMagnet = function(uri) {
     return !!parseInfoHash(uri);
 };
 service.addService = function(serv, pushToFront) {
-    if(_.isFunction(serv)){
+    if(isFunction(serv)){
         !pushToFront ? servUrl.push(serv) : servUrl.unshift(serv);
+        logger.debug('Magnet conversion service added to stack!');
     }else{
         logger.debug('Magnet conversion service not added!');
     }

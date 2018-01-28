@@ -75,7 +75,7 @@ service.getLink = function(uri) {
         if (!hash) {
             const err = new Error('Invalid magnet uri or info hash.');
             logger.error(err);
-            reject(err);
+            return reject(err);
         }else{
             var getNext = function(x) {
                 const attemptCount = x+1;

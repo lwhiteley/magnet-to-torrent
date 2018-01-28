@@ -51,17 +51,17 @@ service.addService = function(serv, pushToFront) {
 var verifyTorrent = function(url) {
     const options = { follow_max: 5 };
     const result = needle('head', url, options).then((response) => {
-        if (response.statusCode >= 200 && response.statusCode < 300) {
-            if (response.headers['content-type'] === 'application/octet-stream' ||
-                response.headers['content-type'] === 'application/x-bittorrent') {
-                return url;
-            } else {
-                const err = new Error('Invalid content type: ' + response.headers['content-type']);
-                logger.error(err);
-                return Promise.reject(err);
-            }
-        } else {
+        if (!(response.statusCode >= 200 && response.statusCode < 300)) {
             const err = new Error('Error response: ' + response.statusCode);
+            logger.error(err);
+            return Promise.reject(err);
+        }
+
+        if (response.headers['content-type'] === 'application/octet-stream' ||
+            response.headers['content-type'] === 'application/x-bittorrent') {
+            return url;
+        } else {
+            const err = new Error('Invalid content type: ' + response.headers['content-type']);
             logger.error(err);
             return Promise.reject(err);
         }

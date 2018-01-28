@@ -52,7 +52,7 @@ See snippet below.
 eg.
 ```javascript
 var service = function(hash){
-    return 'http://reflektor.karmorra.info/torrent/' + hash + '.torrent';
+    return `http://reflektor.karmorra.info/torrent/${hash}.torrent`;
 };
 
 magnetToTorrent.addService(service);

@@ -16,7 +16,7 @@ magnetToTorrent.getLink(magnet)
     .then( function(torrentLink){
         console.log(torrentLink); // torrent url as string
     })
-    .fail(function(error){
+    .catch(function(error){
         console.error(error); // couldn't get a valid link
     });
 ```

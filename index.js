@@ -13,7 +13,7 @@ const validator = require('validator');
 
 const service = {};
 
-const servUrl = [,
+const servUrl = [
     function(hash) {
         return `http://btcache.me/torrent//${hash}`;
     },

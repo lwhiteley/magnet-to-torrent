@@ -37,7 +37,7 @@ var parseInfoHash = function(uri) {
         }
     }
 };
-service.validateMagnet = function(uri) {
+service.isMagnet = function(uri) {
     return !!parseInfoHash(uri);
 };
 service.addService = function(serv, pushToFront) {

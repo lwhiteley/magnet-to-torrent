@@ -21,12 +21,12 @@ magnetToTorrent.getLink(magnet)
     });
 ```
 
-### Validate a Magnet URI
+### Check if URI is a Magnet URI
 
 The following verifies if the magnet uri provided is formatted correctly.
 
 ```javascript
-var bool = magnetToTorrent.validateMagnet(magnet); // returns boolean
+var bool = magnetToTorrent.isMagnet(magnet); // returns boolean
 ```
 
 ### Default Services Used

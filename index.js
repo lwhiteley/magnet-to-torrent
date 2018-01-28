@@ -15,7 +15,7 @@ const service = {};
 
 const servUrl = [
     function(hash) {
-        return `http://btcache.me/torrent//${hash}`;
+        return `http://btcache.me/torrent/${hash}`;
     },
     function(hash) {
         return `http://bt.box.n0808.com/${hash.slice(0, 2)}/${hash.slice(-2)}/${hash}.torrent`;
